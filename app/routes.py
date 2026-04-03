@@ -31,3 +31,27 @@ def create_task():
     save_tasks(tasks)
 
     return jsonify(new_task), 201
+
+@main.route("/tasks/<int:task_id>", methods=["PUT"])
+def update_task(task_id):
+    tasks = load_tasks()
+
+    for task in tasks:
+        if task["id"] == task_id:
+            task["completed"] = True
+            save_tasks(tasks)
+            return jsonify(task)
+
+    return jsonify({"error": "Task not found"}), 404
+
+@main.route("/tasks/<int:task_id>", methods=["DELETE"])
+def delete_task(task_id):
+    tasks = load_tasks()
+
+    for task in tasks:
+        if task["id"] == task_id:
+            tasks.remove(task)
+            save_tasks(tasks)
+            return jsonify({"message": "Task deleted"})
+
+    return jsonify({"error": "Task not found"}), 404
